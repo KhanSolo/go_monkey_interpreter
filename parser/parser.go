@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"monkey/ast"
 	"monkey/lexer"
 	"monkey/token"
@@ -11,10 +12,15 @@ type Parser struct {
 
 	curToken  token.Token
 	peekToken token.Token
+
+	errors []string
 }
 
 func New(l *lexer.Lexer) *Parser {
-	p := &Parser{l: l}
+	p := &Parser{
+		l:      l,
+		errors: []string{},
+	}
 
 	// read 2 tokens, so curToken and peekToken are both set
 	p.nextToken()
@@ -29,12 +35,17 @@ func (p *Parser) nextToken() {
 }
 
 func (p *Parser) ParseProgram() *ast.Program {
+	fmt.Println("ParseProgram() starting")
+	defer fmt.Println("ParseProgram() completed")
+
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
 
+	fmt.Println("parsing cycle")
 	for p.curToken.Type != token.EOF {
 		stmt := p.parseStatement()
 		if stmt != nil {
+			fmt.Printf("appending statement %s\n", stmt)
 			program.Statements = append(program.Statements, stmt)
 			p.nextToken()
 		}
@@ -87,6 +98,19 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 		p.nextToken()
 		return true
 	} else {
+		p.peekError(t)
 		return false
 	}
+}
+
+func (p *Parser) Errors() []string {
+	return p.errors
+}
+
+func (p *Parser) peekError(t token.TokenType) {
+	msg := fmt.Sprintf("expected next token to be %s, got %s instead", t, p.peekToken.Type)
+
+	fmt.Println(msg)
+
+	p.errors = append(p.errors, msg)
 }
