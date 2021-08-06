@@ -8,19 +8,15 @@ import (
 
 func TestLetStatements(t *testing.T) {
 	input := `
-	let x 5;
+	let x = 5;
 	let y = 10;
 	let foobar = 838383;
 	`
 
-	t.Log("lexer.New")
 	l := lexer.New(input)
 	p := New(l)
 
-	t.Log("p.ParseProgram()")
 	program := p.ParseProgram()
-
-	t.Log("checkParserErrors()")
 	checkParserErrors(t, p)
 
 	if program == nil {
@@ -28,8 +24,7 @@ func TestLetStatements(t *testing.T) {
 	}
 
 	if len(program.Statements) != 3 {
-		t.Fatalf("program.Statements does not contain 3 statements. got=%d",
-			len(program.Statements))
+		t.Fatalf("program.Statements does not contain 3 statements. got=%d", len(program.Statements))
 	}
 
 	tests := []struct {
@@ -40,7 +35,6 @@ func TestLetStatements(t *testing.T) {
 		{"foobar"},
 	}
 
-	t.Log("test cycle")
 	for i, tt := range tests {
 		stmt := program.Statements[i]
 		if !testLetStatement(t, stmt, tt.expectedIdentifier) {

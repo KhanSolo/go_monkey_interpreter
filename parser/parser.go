@@ -44,11 +44,12 @@ func (p *Parser) ParseProgram() *ast.Program {
 	fmt.Println("parsing cycle")
 	for p.curToken.Type != token.EOF {
 		stmt := p.parseStatement()
+		//fmt.Printf("get statement %s\n", stmt)
 		if stmt != nil {
-			fmt.Printf("appending statement %s\n", stmt)
+			//fmt.Printf("appending statement %s\n", stmt)
 			program.Statements = append(program.Statements, stmt)
-			p.nextToken()
 		}
+		p.nextToken()
 	}
 
 	return program
@@ -64,15 +65,18 @@ func (p *Parser) parseStatement() ast.Statement {
 }
 
 func (p *Parser) parseLetStatement() *ast.LetStatement {
+
 	stmt := &ast.LetStatement{Token: p.curToken}
 
 	if !p.expectPeek(token.IDENT) {
+		//fmt.Println("not found IDENT - nil")
 		return nil
 	}
 
 	stmt.Name = &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 
 	if !p.expectPeek(token.ASSIGN) {
+		//fmt.Println("not found ASSIGN - nil")
 		return nil
 	}
 
