@@ -112,3 +112,30 @@ return 993322;
 		}
 	}
 }
+
+func TestIdentifierExpression(t *testing.T) {
+	input := "foobar;"
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program hat not enough statements. got=%d", len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ExpressionStatement. got=%7", program.Statements[0])
+	}
+
+	ident, ok := stmt.Expression.(*ast.Identifier)
+	if !ok {
+		t.Errorf("exp not *ast.Identifier. got=%7", stmt.Expression)
+	}
+
+	if ident.TokenLiteral() != "foobar" {
+		t.Fatalf("ident.TokenLiteral not %s. got=%s", "foobar", ident.TokenLiteral())
+	}
+}
