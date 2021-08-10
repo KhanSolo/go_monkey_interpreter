@@ -127,12 +127,12 @@ func TestIdentifierExpression(t *testing.T) {
 
 	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
-		t.Fatalf("program.Statements[0] is not ExpressionStatement. got=%7", program.Statements[0])
+		t.Fatalf("program.Statements[0] is not ExpressionStatement. got=%T", program.Statements[0])
 	}
 
 	ident, ok := stmt.Expression.(*ast.Identifier)
 	if !ok {
-		t.Errorf("exp not *ast.Identifier. got=%7", stmt.Expression)
+		t.Errorf("exp not *ast.Identifier. got=%T", stmt.Expression)
 	}
 
 	if ident.TokenLiteral() != "foobar" {
