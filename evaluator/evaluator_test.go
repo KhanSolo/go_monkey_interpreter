@@ -310,7 +310,7 @@ func TestClosures(t *testing.T) {
 }
 
 func TestStringLiteral(t *testing.T) {
-	input := "hello world"
+	input := `"hello world"`
 
 	evaluated := testEval(input)
 	str, ok := evaluated.(*object.String)
